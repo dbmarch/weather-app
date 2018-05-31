@@ -40,10 +40,14 @@ request ({
     json: true
 } , (error, response, body) => {
     //console.log (JSON.stringify(response));
-    if (response.statusCode == 200) {
-        if (body.results[0] === undefined) {
+    if (error) {
+        console.log ('Unable to connect to Google Service');
+    } else if (response.statusCode === 200) {
+        if( body.results.length === 0) {
+            console.log ('NO RESULTS FOUND');
+        } else if (body.results[0] === undefined) {
             console.log ("Received an undefined response with an OK");
-            console.log (JSON.stringify(response));
+            console.log (JSON.stringify(response, undefined, 2));
         }
         else {
             console.log (`Address: ${body.results[0].formatted_address}`);
@@ -53,6 +57,7 @@ request ({
         }
 
     } else {
+        console.log ('Unknown error');
         console.log (JSON.stringify(error));
     }   
     //console.log (JSON.stringify(location));
