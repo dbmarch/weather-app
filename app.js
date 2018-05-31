@@ -1,5 +1,6 @@
 const yargs  = require ('yargs');
 const geocode = require ('./geocode/geocode');
+const forecast = require('./forecast/forecast');
 
 const argv = yargs
     .options ({
@@ -20,7 +21,11 @@ geocode.geocodeAddress (argv.address, (errorMessage, results) => {
         console.log (errorMessage);
     } else {
         console.log (JSON.stringify(results, undefined, 2));
+        forecast.retrieveForecast(results.location, ()=> {
+            console.log ("weather forecast retrieved");
+        });
     }
     console.log ('---');
 });
+
 
