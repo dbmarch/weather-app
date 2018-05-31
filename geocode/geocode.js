@@ -11,11 +11,15 @@ if (API_KEY === undefined) {
 
 const URL_Base = `https://maps.googleapis.com/maps/api/geocode/json?key=${API_KEY}&address=`;
 
-var geocodeAddress = (address) => {
+var geocodeAddress = (address, callback) => {
     
     console.log (`geocodeAddress: ${address}`);
     const encodedAddress = encodeURIComponent(address);
     const newURL = URL_Base+encodedAddress;
+    var cb_data = { 
+        error : undefined,
+        results:  {}
+    };
 
     request ({
         url: newURL,
@@ -23,25 +27,25 @@ var geocodeAddress = (address) => {
     } , (error, response, body) => {
         //console.log (JSON.stringify(response));
         if (error) {
-            console.log ('Unable to connect to Google Service');
+            cb_data.error = 'Unable to connect to Google Service';
         } else if (response.statusCode === 200) {
             if( body.results.length === 0) {
-                console.log ('NO RESULTS FOUND');
+                cb_data.error ='NO RESULTS FOUND';
             } else if (body.results[0] === undefined) {
-                console.log ("Received an undefined response with an OK");
+                cb_data.error = "Received an undefined response with an OK";
                 console.log (JSON.stringify(response, undefined, 2));
             }
             else {
-                console.log (`Address: ${body.results[0].formatted_address}`);
-                console.log (`Lat: ${body.results[0].geometry.location.lat}   Long: ${body.results[0].geometry.location.lng}`);
-
-                const location = body.results[0].geometry.location;
+                cb_data.results.address =  body.results[0].formatted_address;
+                //console.log (`Lat: ${body.results[0].geometry.location.lat}   Long: ${body.results[0].geometry.location.lng}`);
+                cb_data.results.location =  body.results[0].geometry.location;
             }
 
         } else {
-            console.log ('Unknown error');
-            console.log (JSON.stringify(error));
+            cb_data.error = 'Unknown error';
+            //console.log (JSON.stringify(error));
         }   
+        callback (cb_data.error, cb_data.results);
         //console.log (JSON.stringify(location));
         //console.log (JSON.stringify(body.results[0], undefined, 2));
     });
