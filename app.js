@@ -21,8 +21,21 @@ geocode.geocodeAddress (argv.address, (errorMessage, results) => {
         console.log (errorMessage);
     } else {
         console.log (JSON.stringify(results, undefined, 2));
-        forecast.retrieveForecast(results.location, ()=> {
-            console.log ("weather forecast retrieved");
+        forecast.retrieveForecast(results.location, (errorForecast, results)=> {
+            if (errorForecast) {
+                console.log ("Unable to Fetch Weather");
+            } else {
+                console.log (`The temperature is: ${results.temperature}`);
+                // hourly.data[i].temperature 
+                //console.log (results.hourly.data[0]);
+                //console.log (`Daily has ${results.daily.data.length} forecasts`);
+                
+                var dailyHigh = results.daily.data.map( (day) => (day.temperatureHigh));
+                var dailyLow  = results.daily.data.map ( (day) => (day.temperatureLow));
+                console.log (dailyHigh);
+                console.log (dailyLow);
+                
+            }
         });
     }
     console.log ('---');

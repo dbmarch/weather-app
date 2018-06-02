@@ -13,7 +13,7 @@ const URL_Base = `https://maps.googleapis.com/maps/api/geocode/json?key=${API_KE
 
 var geocodeAddress = (address, callback) => {
     
-    console.log (`geocodeAddress: ${address}`);
+    //console.log (`geocodeAddress: ${address}`);
     const encodedAddress = encodeURIComponent(address);
     const newURL = URL_Base+encodedAddress;
     var cb_data = { 
